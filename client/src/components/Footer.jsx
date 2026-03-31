@@ -5,8 +5,7 @@ const Footer = () => {
         <div className="max-w-80">
           <h1 className="text-3xl font-semibold text-[#212121]">Grocery App</h1>
           <p className="text-sm">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
+            Fresh groceries delivered to your door. Shop smart, eat fresh, live better.
           </p>
           <div className="flex items-center gap-3 mt-4">
             {/* Instagram */}
@@ -106,7 +105,7 @@ const Footer = () => {
       </div>
       <hr className="border-gray-300 mt-8" />
       <div className="flex flex-col md:flex-row gap-2 items-center justify-between py-5">
-        <p>© {new Date().getFullYear()} Brand. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Made By ❤️ Grocery Store. All rights reserved.</p>
         <ul className="flex items-center gap-4">
           <li>
             <a href="#">Privacy</a>

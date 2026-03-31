@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { assets } from "../assets/assets";
-import { AppContext } from "../context/AppContext";
+import { AppContext } from "../context/appContext";
 import toast from "react-hot-toast";
 
 const Address = () => {
@@ -15,16 +15,17 @@ const Address = () => {
     country: "",
     phone: "",
   });
-  const { axios, user, navigate } = useContext(AppContext);
+
+  const { axios, user, loading, navigate } = useContext(AppContext);
+
   const handleChange = (e) => {
     setAddress({ ...address, [e.target.name]: e.target.value });
   };
 
-  const submitHanlder = async (e) => {
+  const submitHandler = async (e) => {
     try {
       e.preventDefault();
       const { data } = await axios.post("/api/address/add", { address });
-      console.log("data", data);
       if (data.success) {
         toast.success(data.message);
         navigate("/cart");
@@ -35,11 +36,17 @@ const Address = () => {
       toast.error(error.message);
     }
   };
+
+  // FIX: wait for auth to finish loading before deciding to redirect
   useEffect(() => {
-    if (!user) {
+    if (!loading && !user) {
       navigate("/cart");
     }
-  }, []);
+  }, [user, loading]);
+
+  // FIX: show nothing while auth is still being checked (prevents blink)
+  if (loading) return null;
+
   return (
     <div className="mt-12 flex flex-col md:flex-row gap-6 p-6 bg-gray-100 rounded-lg shadow-md">
       {/* Left Side: Address Fields */}
@@ -48,7 +55,7 @@ const Address = () => {
           Address Details
         </h2>
         <form
-          onSubmit={submitHanlder}
+          onSubmit={submitHandler}
           className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
           <div>
