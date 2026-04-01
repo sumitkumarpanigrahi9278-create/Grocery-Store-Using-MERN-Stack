@@ -10,20 +10,24 @@ import productRoutes from "./routes/product.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
 import addressRoutes from "./routes/address.routes.js";
 import orderRoutes from "./routes/order.routes.js";
-
 import { connectCloudinary } from "./config/cloudinary.js";
 
 const app = express();
 
 await connectCloudinary();
-// allow multiple origins
-const allowedOrigins = ["http://localhost:5173"];
-//middlewares
+
+// Allow multiple origins
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://grocerystoreusingmernstack.netlify.app",
+];
+
+// Middlewares
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 
-// Api endpoints
+// API endpoints
 app.use("/images", express.static("uploads"));
 app.use("/api/user", userRoutes);
 app.use("/api/seller", sellerRoutes);
