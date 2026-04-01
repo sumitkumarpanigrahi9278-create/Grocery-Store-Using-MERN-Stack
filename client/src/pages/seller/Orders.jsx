@@ -1,14 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { AppContext, useAppContext } from "../../context/AppContext";
-import { assets, dummyOrders } from "../../assets/assets";
+import { AppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 
 const Orders = () => {
-  const boxIcon =
-    "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/e-commerce/boxIcon.svg";
-
   const [orders, setOrders] = useState([]);
   const { axios } = useContext(AppContext);
+
   const fetchOrders = async () => {
     try {
       const { data } = await axios.get("/api/order/seller");
@@ -21,6 +18,7 @@ const Orders = () => {
       toast.error(error.message);
     }
   };
+
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -28,6 +26,9 @@ const Orders = () => {
   return (
     <div className="md:p-10 p-4 space-y-4">
       <h2 className="text-lg font-medium">Orders List</h2>
+      {orders.length === 0 && (
+        <p className="text-gray-500">No orders found.</p>
+      )}
       {orders.map((order, index) => (
         <div
           key={index}
@@ -36,8 +37,8 @@ const Orders = () => {
           <div className="flex gap-5">
             <img
               className="w-12 h-12 object-cover opacity-60"
-              src={`http://localhost:5000/images/${order.items[0].product.image[0]}`}
-              alt="boxIcon"
+              src={order.items[0].product.image[0]}
+              alt="product"
             />
             <>
               {order.items.map((item, index) => (
@@ -63,7 +64,7 @@ const Orders = () => {
             </p>
             <p>
               {order.address.street}, {order.address.city},{" "}
-              {order.address.state},{order.address.zipcode},{" "}
+              {order.address.state}, {order.address.zipcode},{" "}
               {order.address.country}
             </p>
           </div>
@@ -74,7 +75,7 @@ const Orders = () => {
 
           <div className="flex flex-col text-sm">
             <p>Method: {order.paymentType}</p>
-            <p>Date: {order.orderDate}</p>
+            <p>Date: {new Date(order.createdAt).toLocaleDateString()}</p>
             <p>Payment: {order.isPaid ? "Paid" : "Pending"}</p>
           </div>
         </div>
@@ -82,4 +83,5 @@ const Orders = () => {
     </div>
   );
 };
+
 export default Orders;
