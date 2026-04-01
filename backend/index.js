@@ -16,14 +16,29 @@ const app = express();
 
 await connectCloudinary();
 
-// Allow multiple origins
+// Allow multiple origins including all Netlify preview URLs
 const allowedOrigins = [
   "http://localhost:5173",
   "https://grocerystoreusingmernstack.netlify.app",
 ];
 
 // Middlewares
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        origin.endsWith(".netlify.app")
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 app.use(express.json());
 
