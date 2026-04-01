@@ -1,12 +1,36 @@
 import Product from "../models/product.model.js";
+import { v2 as cloudinary } from "cloudinary";
+
+// Helper: upload buffer to Cloudinary
+const uploadToCloudinary = (buffer) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "grocery-store" },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result.secure_url);
+      }
+    );
+    stream.end(buffer);
+  });
+};
 
 // add product :/api/product/add
 export const addProduct = async (req, res) => {
   try {
     const { name, price, offerPrice, description, category } = req.body;
 
-    // FIX: save full Cloudinary URL instead of just filename
-    const image = req.files?.map((file) => file.path);
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "At least one image is required",
+      });
+    }
+
+    // Upload all images to Cloudinary and get URLs
+    const image = await Promise.all(
+      req.files.map((file) => uploadToCloudinary(file.buffer))
+    );
 
     if (
       !name ||
@@ -14,7 +38,6 @@ export const addProduct = async (req, res) => {
       !offerPrice ||
       !description ||
       !category ||
-      !image ||
       image.length === 0
     ) {
       return res.status(400).json({

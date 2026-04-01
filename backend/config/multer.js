@@ -1,13 +1,6 @@
 import multer from "multer";
-import { v2 as cloudinary } from "cloudinary";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
 
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "grocery-store",
-    allowed_formats: ["jpg", "jpeg", "png", "webp"],
-  },
-});
+// Use memory storage — files will be uploaded to Cloudinary manually
+const storage = multer.memoryStorage();
 
 export const upload = multer({ storage });
